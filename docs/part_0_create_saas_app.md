@@ -1,6 +1,4 @@
-Part 0: Demystifying SaaS app creation
-==============================
-
+# Part 0:  Demystifying SaaS app creation
 **Goal:** Understand the steps needed to create, version, and deploy a SaaS app, including tracking the libraries it depends on so that your production and development environments are as similar as possible.
 
 **What you will do:** Create a simple "hello world" app using the Sinatra framework, version it properly, and deploy it to Heroku.
@@ -22,16 +20,18 @@ Let's start with the following steps:
 
 ```rb
 source 'https://rubygems.org'
-ruby '2.6.6'
+ruby '3.3.8'
 
-gem 'sinatra', '>= 2.0.1'
+gem 'sinatra', '~> 4.1'
+gem 'puma',    '~> 6.6'
+gem 'rackup',  '~> 2.2.1'
 ```
 
 The first line says that the preferred place to download any necessary gems is https://rubygems.org, which is where the Ruby community registers "production ready" gems.
 
 The second line specifies which version of the Ruby language interpreter is required.  If we omitted this line, Bundler wouldn't try to verify which version of Ruby is available; there are subtle differences between the versions, and not all gems work with all versions, so it's best to specify this.
 
-The last line says we need version 2.0.1 or later of the `sinatra` gem. In some cases we don't need to specify which version of a gem we want; in this case we do specify it because we rely on some features that are absent from earlier versions of Sinatra.
+The next line says we need version 4.1 or later of the `sinatra` gem. In some cases we don't need to specify which version of a gem we want; in this case we do specify it because we rely on some features that are absent from earlier versions of Sinatra.
 
 Run Bundler
 -----------
@@ -57,25 +57,26 @@ The first command stages all changed files for committing. The second command co
 <details>
   <summary>After running <code>bundle</code>, why are there gems listed in <code>Gemfile.lock</code>
 that were not listed in <code>Gemfile</code>?</summary>
-  <p><blockquote>Bundler looked up the information for each Gem you requested (in this case, only <code>sinatra</code>) and realized that it depends on other gems, which in turn depend on still others, so it recursively installed all those dependencies.  For example, the <code>rack</code> appserver is a gem, and while you didn't explicitly request it, <code>sinatra</code> depends on it.  This is an example of the power of automation: rather than requiring you (the app developer) to understand every Gem dependency, Bundler automates that process and lets you focus only on your app's top-level dependencies.</blockquote></p>
+  <p><blockquote>Bundler looked up the information for each Gem you requested and realized that it depends on other gems, which in turn depend on still others, so it recursively installed all those dependencies.  For example, the <code>rack</code> appserver is a gem, and while you didn't explicitly request it, <code>sinatra</code>  and <code>rackup</code> both depend on it.  This is an example of the power of automation: rather than requiring you (the app developer) to understand every Gem dependency, Bundler automates that process and lets you focus only on your app's top-level dependencies.</blockquote></p>
 </details>
 
 
 Create a simple SaaS app with Sinatra
 -------------------------------------
 
-As Chapter 2 of ESaaS explains, SaaS apps require a web server to receive HTTP requests from the outside world, and an application server that "connects" your app's logic to the web server.  For development, we will use `webrick`, a very simple Ruby-based web server that would be inappropriate for production but is fine for development.  In both development and production, we will use the `rack` Ruby-based application server, which supports Ruby apps written in various frameworks including Sinatra and Rails.
+As Chapter 3 of ESaaS explains, SaaS apps require a web server to receive HTTP requests from the outside world, and an application server that "connects" your app's logic to the web server.  For both development and production, we will use `puma`, a fast and concurrent Ruby-based web server, together with the `rack` application server, which supports Ruby apps written in various frameworks including Sinatra and Rails.
 
-As Chapter 2 of *ESaaS* explains, a SaaS app essentially recognizes and responds to HTTP requests corresponding to the application's *routes* (recall that a route consists of an HTTP method such as `GET` or `POST` plus a URI).  Sinatra provides an extremely lightweight shorthand for matching a route with the app code to be executed when a request using that route arrives from the Web server.
+As Chapter 3 of *ESaaS* explains, a SaaS app essentially recognizes and responds to HTTP requests corresponding to the application's *routes* (recall that a route consists of an HTTP method such as `GET` or `POST` plus a URI).  Sinatra provides an extremely lightweight shorthand for matching a route with the app code to be executed when a request using that route arrives from the Web server.
 
 Create a file in your project called `app.rb` containing the following:
 
 ```rb
-require 'sinatra'
+require 'sinatra/base'
 
 class MyApp < Sinatra::Base
+
   get '/' do
-    "<!DOCTYPE html><html><head></head><body><h1>Hello World</h1></body></html>"
+    '<!DOCTYPE html><html><body><h1>Hello World</h1></body></html>'
   end
 end
 ```
@@ -96,29 +97,26 @@ As you see from the above simple example, Sinatra lets you write functions that 
 To run our app, we have to start the application server and presentation tier (web) server.  The `rack` application server is controlled by a file `config.ru`, which you must now create and add to version control, containing the following:
 
 ```rb
-require './app'
+require_relative 'app'
+
 run MyApp
 ```
 
-The first line tells Rack that our app lives in the file `app.rb`, which you created above to hold your app's code.  We have to explicitly state that our `app` file is located in the current directory (.) because `require` normally looks only in standard system directories to find gems.
+The first line tells Rack that our app lives in the file `app.rb`, which you created above to hold your app's code.  
 
 You're now ready to test-drive our simple app with a command line:
-| Local computer | Codio |
-|-----|------|
-| `bundle exec rackup --port 3000` | `bundle exec rackup --host 0.0.0.0 --port 3000` |
+`bundle exec rackup --port 3000` 
 
-This command starts the Rack appserver and the WEBrick webserver.  Prefixing it with `bundle exec` ensures that you are running with the gems specified in `Gemfile.lock`.  Rack will look for `config.ru` and attempt to start our app based on the information there.
+This command starts the Rack appserver and the Puma webserver.  Prefixing it with `bundle exec` ensures that you are running with the gems specified in `Gemfile.lock`.  Rack will look for `config.ru` and attempt to start our app based on the information there.
 
 To see the webapp:
 
-| Local computer | Codio |
-|-----|------|
-| Visit `localhost:3000` in your browser to see the webapp. It will open in a new tab in the IDE if you click on it, but you should open up a fresh browser tab and paste in that URL. <br><br> Point a new Web browser tab at the running app's URL and verify that you can see "Hello World". | Click the "Box URL" button on your top tool bar. The button should be pre-configured to point at port 3000: <br> <br> ![BoxURL](https://global.codio.com/content/BoxURL.png) <br> <br> The app should open in a new tab. Verify that you can see "Hello World". |
+Visit `localhost:3000` in your browser and verify that you can see "Hello World". 
 
 #### Self Check Question
 
 <details>
-  <summary>What happens if you try to visit a non-root URL such as <code>https://localhost:3000/hello</code> and why? (your URL root will vary)</summary>
+  <summary>What happens if you try to visit a non-root URL such as <code>https://localhost:3000/hello</code> and why?</summary>
   <p><blockquote> You'll get a humorous error message from the Sinatra framework, since you don't have a route matching <code>get '/hello'</code> in your app.  Since Sinatra is a SaaS framework, the error message is packaged up in a Web page and delivered to your browser.</blockquote></p>
 </details>
 
@@ -133,7 +131,7 @@ Modify `app.rb` so that instead of "Hello World" it prints "Goodbye World". Save
 
 No changes? Confused?
 
-Now go back to the shell window where you ran `rackup` and press Ctrl-C to stop Rack.  Then type `bundle exec rackup --port 3000` for local development or `$bundle exec rackup --host 0.0.0.0 --port 3000` for Codio development again, and once it is running, go back to your browser tab with your app and refresh the page.  This time it should work.
+Now go back to the shell window where you ran `rackup` and press Ctrl-C to stop Rack.  Then type `bundle exec rackup --port 3000`, and once it is running, go back to your browser tab with your app and refresh the page.  This time it should work.
 
 What this shows you is that if you modify your app while it's running, you have to restart Rack in order for it to "see" those changes.  Since restarting it manually is tedious, we'll use the `rerun` gem, which restarts Rack automatically when it sees changes to files in the app's directory. (Rails does this for you by default during development, as we'll see, but Sinatra doesn't.)
 
@@ -150,37 +148,43 @@ Now run `bundle install` to have it download the `rerun` gem and any dependencie
 Any gem specifications inside the `group :development` block will only be examined if bundle is run in the development environment.  (The other environments you can specify are :test and :production, and you can define new environments yourself.)  Gem specifications outside of any group block are assumed to apply in all environments.
 
 Say the following in the terminal window to start your app and verify the app is running:
-| Local computer | Codio |
-|-----|------|
-| `bundle exec rerun -- rackup --port 3000` | `bundle exec rerun -- rackup -p 3000 -o 0.0.0.0` |
+`bundle exec rerun -- rackup --port 3000` 
 
 There are more details on rerun's usage available in the gem's [GitHub
 README](https://github.com/alexch/rerun#usage). Gems are usually on
 GitHub and their READMEs are usually full of helpful instructions about how to use them.
 
-In this case we are prefixing with `bundle exec` again in order to ensure we are using the gems in the Gemfile.lock, and the `--` symbol is there to assert that the command we want rerun to operate with is `rackup -p $PORT -o $IP`.  We could achieve the same effect with `bundle exec rerun "rackup -p 3000 -o 0.0.0.0"`.  They are equivalent.   More importantly, any detected changes will now cause the server to restart automatically, similar to the use of `guard` to auto re-run specs when files change.
+In this case we are prefixing with `bundle exec` again in order to ensure we are using the gems in the Gemfile.lock, and the `--` symbol is there to assert that the command we want rerun to operate with is `rackup --port 3000`.  More importantly, any detected changes will now cause the server to restart automatically, similar to the use of `guard` to auto re-run specs when files change.
 
 Modify `app.rb` to print a different message, and verify that the change is detected by refreshing your browser tab with the running app.  Also before we move on you should commit your latest changes to git.
 
 Deploy to Heroku
 ----------------
-Heroku is a cloud platform-as-a-service (PaaS) where we can deploy our Sinatra (and later Rails) applications. If you don't have an account yet, go sign up at http://www.heroku.com. You'll need your login and password for the next step.
+[Heroku](http://www.heroku.com) is a cloud platform-as-a-service (PaaS) where we can deploy our Sinatra (and later Rails) applications. If you don't have an account yet, go sign up. You'll need your login, password, and API Key for the next step.
+
+Note that Heroku has a [special offer for students](https://www.heroku.com/github-students/) enrolled in the GitHub Student Developer Pack.  This should allow you to do all you need for this course for free.  You can apply for the program in three steps:
+
+1. Enroll in the [GitHub Student Developer Pack](https://education.github.com/pack) (if you’ve not already done so) and click on the Heroku offer.
+2. Sign up for a [Heroku account](https://signup.heroku.com/github-student?redirect-url=https%3A%2F%2Fwww2.heroku.com%2Fgithub-students%2Fsignup), or if you already have one, [log in to your account](https://www2.heroku.com/auth/login?return_to=https://www2.heroku.com/github-students/signup).
+3. [Apply](https://www2.heroku.com/github-students/signup) for the Heroku for GitHub Students offer.
 
 Install Heroku CLI following [instructions](https://devcenter.heroku.com/articles/heroku-cli).
 
-Log in to your Heroku account by typing the command: `heroku login -i` in the terminal. This will connect you to your Heroku account.
+
+Log in to your Heroku account by typing the command: `heroku login -i` in the terminal. Provide your email but when it asks for a password, instead you must find your **API Key** from the bottom of the [Account Settings page on Heroku](https://dashboard.heroku.com/account). Copy and paste this value in for the password and you should be able to log in and bypass the 2-Factor-Authentication that is normally impossible to do in the terminal.
 
 While in the root directory of your project (not your whole workspace), type `heroku create` to create a new project in Heroku. This will tell the Heroku service to prepare for some incoming code, and locally it will add a remote git repository for you called `heroku`.
 
-Next, make sure you stage and commit all changes locally as instructed above (i.e. `git add`, `git commit`, etc).
 
-Earlier we saw that to run the app locally you run `rackup` to start the Rack appserver, and Rack looks in `config.ru` to determine how to start your Sinatra app.  How do you tell a production environment how to start an appserver or other processes necessary to receive requests and start your app?  In the case of Heroku, this is done with a special file named `Procfile`,  which specifies one or more types of Heroku processes your app will use, and how to start each one. The most basic Heroku process type is called a Dyno, or "web worker".  One Dyno can serve one user request at a time.  Since we're on Heroku's free tier, we can only have one Dyno. Let's create a file named `Procfile`, and only this as the name (i.e. Procfile.txt is not valid). Write the following line in your `Procfile`:
+Earlier we saw that to run the app locally you run `rackup` to start the Rack appserver, and Rack looks in `config.ru` to determine how to start your Sinatra app.  How do you tell a production environment how to start an appserver or other processes necessary to receive requests and start your app?  In the case of Heroku, this is done with a special file named `Procfile`,  which specifies one or more types of Heroku processes your app will use, and how to start each one. The most basic Heroku process type is called a Dyno, or "web worker".  One Dyno can serve one user request at a time.  Let's create a file named `Procfile`, and only this as the name (i.e. Procfile.txt is not valid). Write the following line in your `Procfile`:
 
 ```
 web: bundle exec rackup config.ru -p $PORT
 ```
 
 This tells Heroku to start a single web worker (Dyno) using essentially the same command line you used to start Rack locally. Note that in some cases, a `Procfile` is not necessary since Heroku can infer from your files how to start the app. However, it's always better to be explicit.
+
+Next, make sure you stage and commit all changes locally as instructed above (i.e. `git add`, `git commit`, etc).
 
 Your local repo is now ready to deploy to Heroku:
 
@@ -190,12 +194,13 @@ $ git push heroku master
 
 (`master` refers to which branch of the remote Heroku repo we are pushing to.  We'll learn about branches later in the course, but for now, suffice it to say that you can only deploy to the `master` branch on Heroku.) This push will create a running instance of your app at some URL ending with `herokuapp.com`. Enter that URL in a new browser tab to see your app running live. Congratulations, you did it--your app is live!
 
+
 Summary
 -------
 
 * You started a new application project by creating a `Gemfile` specifying which gems you need and running `bundle` to verify that they're available and create the `Gemfile.lock` file that records the versions of gems actually in use.
 
-* You created a Sinatra app in the file `app.rb`, pointed Rack at this file in `config.ru`, and used `rackup` to start the appserver and the WEBrick web server.
+* You created a Sinatra app in the file `app.rb`, pointed Rack at this file in `config.ru`, and used `rackup` to start the appserver and the Puma web server.
 
 * You learned that changing the app's code doesn't automatically cause Rack to reload the app. To save the work of restarting the app manually every time you make a change, you used the `rerun` gem, adding it to the Gemfile in a way that specifies you won't need it in production, only during development.
 

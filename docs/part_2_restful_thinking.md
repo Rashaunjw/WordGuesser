@@ -1,5 +1,4 @@
-Part 2: RESTful thinking for Wordguesser
-=======================================
+# Part 2: RESTful thinking for Wordguesser
 Note: Part 2 is just reading/background info for Part 3.
 
 **Goals:**  Understand how to expose your app's behaviors as RESTful actions in a SaaS environment, and how to preserve game state across (stateless) HTTP requests to your app using the appserver's provided abstraction for cookies.
@@ -22,22 +21,14 @@ In most SaaS apps, the amount of information associated with a user's session is
 
 #### Self Check Question
 
-<details>
-  <summary>Enumerate the minimal game state that must be maintained during a game of Wordguesser.</summary>
-  <p><blockquote>The secret word; the list of letters that have been guessed correctly; the list of letters that have been guessed incorrectly.  Conveniently, the well-factored WordGuesserGame class encapsulates this state using its instance variables, as proper object-oriented design recommends.</blockquote></p>
-</details>
+<details><summary>Enumerate the minimal game state that must be maintained during a game of Wordguesser.</summary><p><blockquote>The secret word; the list of letters that have been guessed correctly; the list of letters that have been guessed incorrectly.  Conveniently, the well-factored WordGuesserGame class encapsulates this state using its instance variables, as proper object-oriented design recommends.</blockquote></p></details>
 
 The game as a RESTful resource
 ------------------------------
 
 #### Self Check Question
 
-<details>
-  <summary>Enumerate the player actions that could cause changes in game state.</summary>
-  <p><blockquote>Guess a letter: possibly modifies the lists of correct or incorrect guesses; possibly results in winning or losing the game.
-<br/><br/>
-Start new game: chooses a new word and sets the incorrect and correct guess lists to empty.</blockquote></p>
-</details>
+<details><summary>Enumerate the player actions that could cause changes in game state.</summary><p><blockquote>Guess a letter: possibly modifies the lists of correct or incorrect guesses; possibly results in winning or losing the game.<br/><br/>Start new game: chooses a new word and sets the incorrect and correct guess lists to empty.</blockquote></p></details>
 <br />
 
 In a service-oriented architecture, we do not expose internal state directly; instead we expose a set of HTTP requests that either display or perform some operation on a hypothetical underlying **resource**.  **The trickiest and most important part of RESTful design is modeling what your resources are and what operations are possible on them.**
@@ -57,14 +48,11 @@ Our initial list of operations on the resource might look like this, where we've
 
 #### Self Check Question
 
-<details>
-  <summary>For a good RESTful design, which of the resource operations should be handled by HTTP GET and which ones should be handled by HTTP POST?</summary>
-  <p><blockquote>Operations handled with <code>GET</code> should not have side effects on the resource, so <code>show</code> can be handled by a <code>GET</code>, but <code>create</code> and <code>guess</code> (which modify game state) should use <CODE>POST</CODE>.  (In fact, in a true service-oriented architecture we can also choose to use other HTTP verbs like <CODE>PUT</CODE> and <CODE>DELETE</CODE>, but we won't cover that in this assignment.)</blockquote></p>
-</details>
+<details><summary>For a good RESTful design, which of the resource operations should be handled by HTTP GET and which ones should be handled by HTTP POST?</summary><p><blockquote>Operations handled with <code>GET</code> should not have side effects on the resource, so <code>show</code> can be handled by a <code>GET</code>, but <code>create</code> and <code>guess</code> (which modify game state) should use <CODE>POST</CODE>.  (In fact, in a true service-oriented architecture we can also choose to use other HTTP verbs like <CODE>PUT</CODE> and <CODE>DELETE</CODE>, but we won't cover that in this assignment.)</blockquote></p></details>
 
 <br />
 
-HTTP is a request-reply protocol and the Web browser is fundamentally a request-reply user interface, so each action by the user must result in something being displayed by the browser.  For the "show status of current game" action, it's pretty clear that what we should show is the HTML representation of the current game, as the `word_with_guesses` method of our game class does.
+HTTP is a request-reply protocol and the Web browser is fundamentally a request-reply user interface, so each action by the user must result in something being displayed by the browser.  For the "show status of current game" action, it's pretty clear that what we should show is the HTML representation of the current game, as the `word_with_guesses` method of our game class does. (In a fancier version, which we encourage you to attempt!, you can add your own custom animations and graphics to the HTML page.)
 
 But when the player guesses a letter--whether the guess is correct or not--what should be the "HTML representation" of the result of that action?
 
@@ -112,22 +100,11 @@ We will see this pattern mirrored later in Rails: a typical resource (such as th
 
 #### Self Check Questions
 
-<details>
-  <summary>Why is it appropriate for the <code>new</code> action to use
-<CODE>GET</CODE> rather than <CODE>POST</CODE>?</summary>
-  <p><blockquote>The <code>new</code> action doesn't by itself cause any state change: it just
-returns a form that the player can submit.</blockquote></p>
-</details>
+<details><summary>Why is it appropriate for the <code>new</code> action to use <CODE>GET</CODE> rather than <CODE>POST</CODE>?</summary><p><blockquote>The <code>new</code> action doesn't by itself cause any state change: it just returns a form that the player can submit.</blockquote></p></details>
 <br />
 
-<details>
-  <summary>Explain why the <code>GET /new</code> action wouldn't be needed if
-your Wordguesser game was called as a service in a true service-oriented
-architecture. </summary>
-  <p><blockquote>In a true SOA, the service that calls Wordguesser can generate an HTTP
-<CODE>POST</CODE> request directly.  The only reason for the <code>new</code> action is to
-provide the human Web user a way to generate that request.</blockquote></p>
-</details>
+<details><summary>Explain why the <code>GET /new</code> action wouldn't be needed if your Wordguesser game was called as a service in a true service-oriented architecture.</summary>
+<p><blockquote>In a true SOA, the service that calls Wordguesser can generate an HTTP <code>POST</code> request directly.  The only reason for the <code>new</code> action is to provide the human Web user a way to generate that request.</blockquote></p></details>
 <br />
 
 Lastly, when the game is over (whether win or lose), we shouldn't be accepting any more guesses.  Since we're planning for our `show` page to include a letter-guess form, perhaps we should have a different type of `show` action when the game has ended---one that does **not** include a way for the player to guess a letter, but (perhaps) does include a button to start a new game.  We can even have separate pages for winning and losing, both of which give the player the chance to start a new game.  Since the `show` action can certainly tell if the game is over, it can conditionally redirect to the `win` or `lose` action when called.
@@ -160,7 +137,7 @@ Show "you lose" page with button to start new game </td><td>GET
 
 ## Summary of the design
 
-You may be itchy about not writing any code yet, but you have finished the most difficult and important task: defining the application's basic resources and how the RESTful routes will map them to actions in a SaaS app.  To summarize:
+You may be itchy about not writing much code yet, but you have finished the most difficult and important task: defining the application's basic resources and how the RESTful routes will map them to actions in a SaaS app.  To summarize:
 
 * We already have a class to encapsulate the game itself, with instance variables that capture the game's essential state and instance methods that operate on it when the player makes guesses.  In the model-view-controller (MVC) paradigm, this is our model.
 

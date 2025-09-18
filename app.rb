@@ -6,8 +6,6 @@ class WordGuesserApp < Sinatra::Base
   enable :sessions
   register Sinatra::Flash
 
-  set :host_authorization, { permitted_hosts: [] }  
-
   before do
     @game = session[:game] || WordGuesserGame.new('')
   end
@@ -27,10 +25,7 @@ class WordGuesserApp < Sinatra::Base
   end
 
   post '/create' do
-    # NOTE: don't change next line - it's needed by autograder!
-    word = params[:word] || WordGuesserGame.get_random_word
-    # NOTE: don't change previous line - it's needed by autograder!
-
+    word = WordGuesserGame.get_random_word
     @game = WordGuesserGame.new(word)
     redirect '/show'
   end

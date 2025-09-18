@@ -1,15 +1,7 @@
 Wordguesser: a scaffolded (!) ESaaS getting-started assignment
 =============================================================
 
-(v1.1, September 2015.  Written by Armando Fox and Nick Herson)
-(some edits by mverdicchio 21 September 2015)
-(refinements by Armando Fox September 2017)
-
 In this assignment you'll be introduced to part of the basic cycle of creating SaaS in a disciplined way.
-
-**NOTE: Do not clone this repo to your workspace. Fork it first, then clone your fork.**
-
-
 
 Learning Goals
 --------------
@@ -20,15 +12,6 @@ After completing this assignment, you will be able to:
 * Understand how SaaS frameworks such as Sinatra support the conceptual components of a three-tier SaaS application architecture
 * Understand the challenges of adapting a non-SaaS application to a SaaS environment, including how to identify and manage application state
 * Understand one use case of service-oriented architecture, in which your SaaS app relies on an external service's API (application programming interface) to provide part of the SaaS app's functionality.
-
-Prerequisites
--------------
-* You should be familiar with Ruby basics, for example by completing the Ruby Intro or Ruby Calisthenics assignment.
-* You should have read [ESaaS](http://www.saasbook.info) Chapter 2, "The Architecture of SaaS Applications", and watched the accompanying videos in the [MOOC](http://www.saas-class.org).
-* You should be comfortable with basic Git usage and how to push your code to GitHub, as described in Appendix A of [ESaaS](http://www.saasbook.info).
-* You will need "survival level" Unix command-line skills and facility with an editor to edit code files.
-
-**NOTE: You may find the [Sinatra documentation](https://sinatrarb.com) helpful to have on hand.**
 
 Introduction
 ------------
@@ -53,5 +36,5 @@ Contents
 * Part 3: [Connecting WordGuesserGame to Sinatra](docs/part_3_connecting_wordguesser_to_sinatra.md)
 * Part 4: [Introducing Cucumber](docs/part_4_cucumber.md)
 * Part 5: [Corner Cases](docs/part_5_corner_cases.md)
-* Part 6: [Conclusion](docs/part_6_conclusion.md)
-* Part 7: [Optional Challenge Assignment](docs/part_7_optional_challenge.md)
+* Part 6: [Submission](docs/part_6_submission.md)
+* Part 7: [Conclusion](docs/part_7_conclusion.md)
