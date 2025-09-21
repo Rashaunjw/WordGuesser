@@ -1,8 +1,19 @@
-<h1>You Win!</h1>
-
-<div class="alert alert-success">
-  The word was
-  <span class="win"><%= @game.word %></span>.
+<div class="text-center">
+  <div class="jumbotron bg-success text-white">
+    <h1 class="display-3">Congratulations!</h1>
+    <h2 class="display-6">You Win!</h2>
+  </div>
+  
+  <div class="card border-success mx-auto" style="max-width: 400px;">
+    <div class="card-header bg-success text-white text-center">
+      <h4 class="mb-0">The Word Was</h4>
+    </div>
+    <div class="card-body text-center">
+      <h2 class="text-success font-weight-bold" style="font-family: 'Courier New', monospace;">
+        <%= @game.word.upcase %>
+      </h2>
+    </div>
+  </div>
+  
+  <%= erb :new %>
 </div>
-
-<%= erb :new %>
