@@ -53,8 +53,9 @@
           <input type="text" name="guess" autocomplete="off" maxlength="1"
                  class="form-control form-control-lg text-center font-weight-bold" 
                  placeholder="A-Z" 
-                 onfocus="this.placeholder=''" 
-                 onblur="if(this.value=='') this.placeholder='A-Z'"
+                 inputmode="text"
+                 pattern="[a-zA-Z]"
+                 title="Enter a single letter"
                  required/>
         </div>
         <div class="col-md-3">
