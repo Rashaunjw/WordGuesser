@@ -27,14 +27,4 @@ You'll deploy your game to the cloud using Heroku, giving you experience in auto
 
 This assignment uses the simple [Sinatra](https://github.com/sinatra/sinatra) framework rather than Rails, so that you can focus on tools, mechanics, and SaaS concepts, all of which will readily map to Rails later.  Since our app doesn't have a database and has very few functions, Sinatra is an easy way to get started.
 
-Contents
----------
 
-* Part 0: [Demystifying SaaS app creation](docs/part_0_create_saas_app.md)
-* Part 1: [Wordguesser](docs/part_1_wordguesser.md)
-* Part 2: [RESTful thinking for Wordguesser](docs/part_2_restful_thinking.md)
-* Part 3: [Connecting WordGuesserGame to Sinatra](docs/part_3_connecting_wordguesser_to_sinatra.md)
-* Part 4: [Introducing Cucumber](docs/part_4_cucumber.md)
-* Part 5: [Corner Cases](docs/part_5_corner_cases.md)
-* Part 6: [Submission](docs/part_6_submission.md)
-* Part 7: [Conclusion](docs/part_7_conclusion.md)
