@@ -1,30 +1,56 @@
-Wordguesser: a scaffolded (!) ESaaS getting-started assignment
-=============================================================
+# WordGuesser 🎯  
+*A test-driven, cloud-deployed word-guessing game built with Sinatra.*
 
-In this assignment you'll be introduced to part of the basic cycle of creating SaaS in a disciplined way.
+---
 
-Learning Goals
---------------
-After completing this assignment, you will be able to:
+## Overview
 
-* Create and deploy simple SaaS apps in your development environment, and deploy them to the public cloud
-* Practice the basic workflow of test-driven development (TDD), in which tests are written before the code (so they fail when first run) and code is then added to make them pass
-* Understand how SaaS frameworks such as Sinatra support the conceptual components of a three-tier SaaS application architecture
-* Understand the challenges of adapting a non-SaaS application to a SaaS environment, including how to identify and manage application state
-* Understand one use case of service-oriented architecture, in which your SaaS app relies on an external service's API (application programming interface) to provide part of the SaaS app's functionality.
+**WordGuesser** is my take on the classic hangman-style word game — built as part of the **Engineering Software as a Service (ESaaS)** course.  
+The goal wasn’t just to make a game — it was to **learn the SaaS development cycle** from the ground up:  
+writing tests first, thinking in user stories, and deploying to the cloud like a real software engineer.
 
-Introduction
-------------
-The full Agile/XP cycle we follow in ESaaS includes talking to the customer, using BDD to develop scenarios, turning those scenarios into runnable integration/acceptance tests with Cucumber, using those scenarios plus TDD to drive the creation of actual code, and deploying the result of each iteration's work to the cloud.
+This project walked me through everything from **test-driven development (TDD)** to **Sinatra web apps** and **Heroku deployment** — all while adapting a simple command-line game into a real, browser-based SaaS.
 
-In this introductory assignment, we've provided RSpec unit tests to let you use TDD to develop game logic for a word-guessing game.  In the full Agile/XP cycle, you'd develop these tests yourself as you code.
+---
 
-You'll then use the Sinatra framework to make the Wordguesser game available as SaaS. Adapting the game logic for SaaS will introduce you to thinking about RESTful routes and service-oriented architecture. As you develop the "SaaS-ified" Wordguessing game, you'll use Cucumber to describe how gameplay will work from the player's point of view and as "full stack" integration tests that will drive SaaS development.  In the full Agile/XP cycle, you'd develop Cucumber scenarios yourself based on consultation with the customer, and create the necessary *step definitions* (Cucumber code that turns plain-English scenarios into runnable tests).  In this assignment we provide both the scenarios and step definitions for you.
+## Learning Highlights 🧠
 
-You'll deploy your game to the cloud using Heroku, giving you experience in automating SaaS deployment.
+Here’s what this project helped me practice and internalize:
 
-**Why Sinatra?** 
+- **Building and deploying** a small SaaS app from scratch  
+- **Test-Driven Development (TDD)** using RSpec  
+- Understanding how frameworks like **Sinatra** fit into the **three-tier architecture** (Model / View / Controller)  
+- Managing **application state** in a web-based environment  
+- Using **service-oriented architecture (SOA)** by connecting to external APIs  
+- Getting hands-on experience deploying to **Heroku**
 
-This assignment uses the simple [Sinatra](https://github.com/sinatra/sinatra) framework rather than Rails, so that you can focus on tools, mechanics, and SaaS concepts, all of which will readily map to Rails later.  Since our app doesn't have a database and has very few functions, Sinatra is an easy way to get started.
+In short — this was about **writing disciplined code**, not just code that “works.”
 
+---
 
+## The Process 🔄
+
+The ESaaS agile workflow goes something like this:
+
+1. Talk to the customer or define the user story  
+2. Write acceptance tests using **Cucumber** (behavior-driven development)  
+3. Use **RSpec** to write unit tests for game logic  
+4. Build just enough code to make those tests pass  
+5. Expose that logic as a **Sinatra** web app  
+6. Deploy and iterate — fast
+
+In the full cycle, you’d write your own RSpec and Cucumber tests from scratch.  
+For this assignment, the scaffolding was provided — letting me focus on understanding the flow, writing clean code, and making the tests go green ✅.
+
+---
+
+## Tech Stack ⚙️
+
+| Layer | Tools / Frameworks |
+|---|---|
+| Language | **Ruby** |
+| Framework | **Sinatra** |
+| Testing | **RSpec**, **Cucumber** |
+| Architecture | **Model–View–Controller (MVC)** |
+| Deployment | **Heroku** |
+| Version Control | **Git & GitHub** |
