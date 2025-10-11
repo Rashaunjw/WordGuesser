@@ -13,6 +13,12 @@ This project walked me through everything from **test-driven development (TDD)**
 
 ---
 
+## Demo / Live Site
+
+You can view the live deployment here:  
+https://rjw-wordguesser-23ce325001cc.herokuapp.com/new
+---
+
 ## Learning Highlights 🧠
 
 Here’s what this project helped me practice and internalize:
