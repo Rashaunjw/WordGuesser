@@ -1,11 +1,11 @@
-# WordGuesser 🎯  
+# WordGuesser 
 *A test-driven, cloud-deployed word-guessing game built with Sinatra.*
 
 ---
 
 ## Overview
 
-**WordGuesser** is my take on the classic hangman-style word game — built as part of the **Engineering Software as a Service (ESaaS)** course.  
+**WordGuesser** is my take on the classic hangman-style word game.  
 The goal wasn’t just to make a game — it was to **learn the SaaS development cycle** from the ground up:  
 writing tests first, thinking in user stories, and deploying to the cloud like a real software engineer.
 
